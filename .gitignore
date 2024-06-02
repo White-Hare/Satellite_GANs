@@ -1,0 +1,9 @@
+/.ipynb_checkpoints
+/Include
+/Lib
+/pyvenv.cfg
+/Scripts
+/share
+/site-packages
+/train.h5
+/__pycache__
