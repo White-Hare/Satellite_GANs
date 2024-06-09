@@ -11,7 +11,8 @@
             "program": "${workspaceFolder}/__main__.py",
             "console": "integratedTerminal",
             "python": "${workspaceFolder}/Scripts/python.exe",
-            "justMyCode": true
+            "stopOnEntry": true,
+            "justMyCode": false
         }
     ]
 }

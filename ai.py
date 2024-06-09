@@ -1,62 +1,91 @@
 import h5py
-import gc
 from glob import glob
 import numpy as np
 from matplotlib import pylab as plt
-import cv2
-import tensorflow as tf
 from  keras.layers import *
 from keras.initializers import *
 from keras.optimizers import *
 from keras.models import Model
 from skimage import exposure
-from sklearn.preprocessing import StandardScaler
-import time
 import os
 from sklearn.model_selection import train_test_split
-import joblib
-from matplotlib import pyplot
 
 
+# save or reload models
+logs_dir = './logs'
+if not os.path.exists(logs_dir):
+    os.mkdir(logs_dir)
 
-def setup():
+
+g_filename = f'{logs_dir}/g_model.h5'
+d_filename = f'{logs_dir}/d_model.h5'
+
+image_shape = (256, 256, 6)
+
+
+def load_train_data():
     #Read dataset
     dataset = h5py.File('./train.h5', 'r')
     X = dataset["x"]
     y = dataset["y"]
+    return X, y
 
+
+def train_setup():
+    X, y = load_train_data()
 
     #show a data sample. OPTIONAL
-    show_sample(X, y)
+    #
+    # show_sample(X, y)
 
     # load image data
-    image_shape = (256, 256, 6)
 
     # define the models
     d_model = define_discriminator(image_shape)
     g_model = define_generator(image_shape)
 
-    # save or reload models
-    logs_dir = './logs'
-    if not os.path.exists(logs_dir):
-        os.mkdir(logs_dir)
-
-    g_filename = f'{logs_dir}/g_model.h5'
-    d_filename = f'{logs_dir}/d_model.h5'
-
+    
     if os.path.exists(g_filename):
-        g_model.load_model(g_filename)
+        g_model.load_weights(g_filename)
         
     if os.path.exists(d_filename):
-        d_model.load_model(d_filename)
+        d_model.load_weights(d_filename)
 
     # define the composite model
     gan_model = define_gan(g_model, d_model, image_shape)
 
     # train model
-    train(d_model, g_model, gan_model, n_epochs=20, n_batch=32, 
-        logs_dir=logs_dir, d_filename=d_filename, g_filename=g_filename, X=X, y=y)
+    train(d_model, g_model, gan_model, n_epochs=20, n_batch=32, X=X, y=y)
 
+
+def load_generator_and_improve_image():
+    model = define_generator(image_shape)
+    model.load_weights(g_filename)
+        
+
+    dataset = h5py.File('./train.h5', 'r')
+    X = dataset["x"]
+    y = dataset["y"]
+    # select a sample of input images
+    [X_realA, X_realB], _ = generate_real_samples(1, 1, X, y)
+    
+    # generate a batch of fake samples
+
+
+    X_fakeB, _ = generate_fake_samples(model, X_realA, 1)
+
+    _, axs = plt.subplots(1, 2, figsize=(10, 8))
+
+    x_fake = X_fakeB[0][:,:, :3]
+    normalized_fake = (x_fake-np.min(x_fake))/(np.max(x_fake)-np.min(x_fake))
+ 
+    x_real = X_realB[0][:,:, :3]
+    normalized_real = (x_real-np.min(x_real))/(np.max(x_real)-np.min(x_real))
+
+    axs[0].imshow(normalized_fake) 
+    axs[1].imshow(normalized_real)
+    
+    plt.show(block=True)
 
 def show_sample(X, y):
     _, axs = plt.subplots(1, 2, figsize=(10, 8))
@@ -78,6 +107,7 @@ def contrast(image):
         
     return image
 
+
 def load_data(batch_size, X, y):
     i=np.random.randint(0,int(len(X)/batch_size))
     
@@ -85,6 +115,7 @@ def load_data(batch_size, X, y):
     img_B=(np.array(y[i:i+batch_size]) / 5000.0) - 1
 
     return img_A,img_B
+
 
 def load_batch(batch_size, X, y):
     
@@ -239,6 +270,7 @@ def generate_fake_samples(g_model, samples, patch_shape):
 
 
 
+
 def summarize_performance(step, g_model, logs_dir, n_samples, X, y):
     r, c = 3, n_samples
     
@@ -268,18 +300,18 @@ def summarize_performance(step, g_model, logs_dir, n_samples, X, y):
             
     filename = '%s/plot_%06d.png' % (logs_dir, step)
     fig.savefig(filename)
-    plt.show()
+    plt.show(block=False)
 
 
 # train pix2pix model
-def train(d_model, g_model, gan_model, n_epochs, n_batch, logs_dir, d_filename, g_filename, X, y):
+def train(d_model, g_model, gan_model, n_epochs, n_batch, X, y):
     
     # determine the output square shape of the discriminator
     n_patch = d_model.output_shape[1]
     
     # unpack dataset
     for epoch in range(1, n_epochs + 1):
-        for batch_i,(trainA,trainB) in enumerate(load_batch(n_batch, X, y)):
+        for batch_i in enumerate(load_batch(n_batch, X, y)):
             
             # select a batch of real samples
             [X_realA, X_realB], y_real = generate_real_samples(n_batch, n_patch, X, y)
@@ -302,7 +334,7 @@ def train(d_model, g_model, gan_model, n_epochs, n_batch, logs_dir, d_filename, 
         # summarize model performance
         summarize_performance(epoch, g_model, logs_dir, n_samples=3, X=X, y=y)
         # save the generator model
-        g_model.save(d_filename)
+        g_model.save(g_filename)
 
         # save the discriminator model        
         d_model.save(d_filename)
