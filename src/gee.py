@@ -14,8 +14,7 @@ def get_image_url(lon_min, lat_min, lon_max, lat_max):
     # Use Sentinel-2 collection instead
     collection = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
         .filterBounds(roi)
-        .filterDate('2020-01-01', '2023-12-31')
-        .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 5))   # Stricter cloud filtering
+        .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))   # Stricter cloud filtering
         .sort('CLOUDY_PIXEL_PERCENTAGE'))
     
     # Get size of collection
@@ -50,7 +49,7 @@ def get_random_satellite_images(num_locations=5):
     for _ in range(num_locations):
         # Generate random coordinates for the bounding box
         lon_min = random.uniform(-180, 180)
-        lat_min = random.uniform(-80, 80)  # was -90, 90
+        lat_min = random.uniform(-90, 90)
         lon_max = lon_min + BOX_SIZE
         lat_max = lat_min + BOX_SIZE
         

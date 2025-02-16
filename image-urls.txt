@@ -3,3 +3,9 @@ https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/83d850f5
 https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/24f0437e5f254ad1260c0c38118392b3-bd655f5b8d65d6a3aaadb15f168f10f6:getPixels
 https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/efb900386116e96ee7cc29e55d53ceda-883ab9f0749a7419aa3ee56b1f5b4d81:getPixels
 https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/0710abeed7d1dd264d52b60082fbc5f0-c485e8ee4871f43141e107ab214ca332:getPixels
+https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/28bde8f76694b6b147ac95a93a8fc45d-134fd1c0556efbf5eabef19e8b2b1f3a:getPixels
+https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/a59e1004a5b34c42d047cf37c01a12d8-490677aa58d02214ec79021b4cacf701:getPixels
+https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/8ee607147fc778e5cbe1c5cc7664342a-ee88a755d4bfbb1f14bc1291d8ea2b42:getPixels
+https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/fc6f504f439a6fdb4477fed93e209e3d-aef71f7d156f998ef48a9bffb6bc4945:getPixels
+https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/77994297682c7b4c360c4ffc7946321a-4e5c72bed25f93869ad0af4f240ed29f:getPixels
+https://earthengine.googleapis.com/v1/projects/satellitegans/thumbnails/e50ac39ebe34098be2ef0d24768ce9e1-f216fcce936b3ad7ef0c2acf86d3f30b:getPixels
