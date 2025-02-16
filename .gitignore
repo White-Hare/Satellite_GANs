@@ -9,3 +9,5 @@
 /__pycache__
 /logs/d_model.h5
 /logs/g_model.h5
+.env
+gee_credentials/

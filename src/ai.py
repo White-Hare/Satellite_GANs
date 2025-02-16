@@ -67,19 +67,19 @@ def load_generator_and_improve_image():
     X = dataset["x"]
     y = dataset["y"]
     # select a sample of input images
-    [X_realA, X_realB], _ = generate_real_samples(1, 1, X, y)
+    [x_real_a, x_real_b], _ = generate_real_samples(1, 1, X, y)
     
     # generate a batch of fake samples
 
 
-    X_fakeB, _ = generate_fake_samples(model, X_realA, 1)
+    x_fake_b, _ = generate_fake_samples(model, x_real_a, 1)
 
     _, axs = plt.subplots(1, 2, figsize=(10, 8))
 
-    x_fake = X_fakeB[0][:,:, :3]
+    x_fake = x_fake_b[0][:,:, :3]
     normalized_fake = (x_fake-np.min(x_fake))/(np.max(x_fake)-np.min(x_fake))
  
-    x_real = X_realB[0][:,:, :3]
+    x_real = x_real_b[0][:,:, :3]
     normalized_real = (x_real-np.min(x_real))/(np.max(x_real)-np.min(x_real))
 
     axs[0].imshow(normalized_fake) 
